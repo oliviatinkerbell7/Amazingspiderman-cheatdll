@@ -1,0 +1,39 @@
+name: Build dinput8.dll (mingw 32-bit)
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup MSYS2 and mingw32
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >
+            mingw-w64-i686-toolchain
+
+      - name: Add mingw32 to PATH
+        shell: bash
+        run: |
+          echo "C:\msys64\mingw32\bin" >> $GITHUB_PATH
+
+      - name: Build 32-bit DLL
+        shell: bash
+        run: |
+          i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
+          ls -la dinput8.dll || true
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dinput8-dll
+          path: dinput8.dll
