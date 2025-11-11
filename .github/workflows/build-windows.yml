@@ -14,17 +14,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Setup MSYS2 and MinGW32
+      - name: Setup MSYS2 and install MinGW32
         uses: msys2/setup-msys2@v2
         with:
           update: true
           install: mingw-w64-i686-toolchain
 
-      - name: Build DLL
+      - name: Build DLL using MSYS2 shell
         shell: msys2 {0}
         run: |
           echo "Compiling dinput8.dll..."
-          g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
+          i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
           ls -la dinput8.dll || true
 
       - name: Upload DLL artifact
