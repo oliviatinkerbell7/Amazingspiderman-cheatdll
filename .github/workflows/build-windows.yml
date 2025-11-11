@@ -12,33 +12,27 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
-      - name: Setup MSYS2 and MinGW
+      - name: Install MSYS2 and MinGW32
         uses: msys2/setup-msys2@v2
         with:
           update: true
-          install: >
-            mingw-w64-i686-toolchain
+          install: mingw-w64-i686-toolchain
 
-      - name: Add MinGW to PATH
+      - name: Add MSYS2 mingw32 to PATH
         shell: bash
-        run: |
-          echo "C:\msys64\mingw32\bin" >> $GITHUB_PATH
+        run: echo "C:/msys64/mingw32/bin" >> $GITHUB_PATH
 
-      - name: Build DLL using MSYS2
+      - name: Build 32-bit DLL
         shell: msys2 {0}
         run: |
           echo "Compiling dinput8.dll..."
           i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
-          ls -la dinput8.dll || true
+          ls -la dinput8.dll
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: dinput8-dll
-          path: dinput8.dll        with:
-          name: dinput8.dll
-          path: build/dinput8.dll        with:
-          name: dinput8-dll
-          path: build/dinput8.dll
+          path: dinput8.dll
