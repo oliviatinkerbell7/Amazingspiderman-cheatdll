@@ -11,17 +11,14 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # 1️⃣ Checkout code
       - name: Checkout repository
         uses: actions/checkout@v5
 
-      # 2️⃣ Setup Visual Studio Build Tools
-      - name: Setup Visual Studio environment
+      - name: Setup Visual Studio Build Tools
         uses: microsoft/setup-msbuild@v1
         with:
           vs-version: 'latest'
 
-      # 3️⃣ Compile the DLL
       - name: Compile DLL
         shell: cmd
         run: |
@@ -30,11 +27,11 @@ jobs:
           cl /LD src\main.cpp /Fe:dinput8.dll /MD /EHsc /Zi
           dir dinput8.dll
 
-      # 4️⃣ Upload DLL artifact
       - name: Upload compiled DLL
         uses: actions/upload-artifact@v4
         with:
           name: dinput8-dll
+          path: dinput8.dll          name: dinput8-dll
           path: dinput8.dll          name: dinput8-dll
           path: dinput8.dll        with:
           name: dinput8-dll
