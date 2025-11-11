@@ -1,4 +1,4 @@
-name: Build dinput8.dll (mingw 32-bit)
+name: Build dinput8.dll (Windows)
 
 on:
   push:
@@ -11,29 +11,30 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Step 1: Checkout your repository
-      - name: Checkout code
-        uses: actions/checkout@v4
+      # 1️⃣ Checkout code
+      - name: Checkout repository
+        uses: actions/checkout@v5
 
-      # Step 2: Setup MSYS2 and install mingw32 toolchain
-      - name: Setup MSYS2 and mingw32
-        uses: msys2/setup-msys2@v2
+      # 2️⃣ Setup Visual Studio Build Tools
+      - name: Setup Visual Studio environment
+        uses: microsoft/setup-msbuild@v1
         with:
-          update: true
-          install: >
-            mingw-w64-i686-toolchain
+          vs-version: 'latest'
 
-      # Step 3: Build DLL inside MSYS2
-      - name: Build DLL using MSYS2
-        shell: msys2 {0}  # Runs this step inside MSYS2 bash
+      # 3️⃣ Compile the DLL
+      - name: Compile DLL
+        shell: cmd
         run: |
-          echo "Compiling dinput8.dll..."
-          g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
-          ls -la dinput8.dll || true
+          echo Compiling dinput8.dll...
+          "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86
+          cl /LD src\main.cpp /Fe:dinput8.dll /MD /EHsc /Zi
+          dir dinput8.dll
 
-      # Step 4: Upload the compiled DLL as artifact
-      - name: Upload artifact
+      # 4️⃣ Upload DLL artifact
+      - name: Upload compiled DLL
         uses: actions/upload-artifact@v4
         with:
+          name: dinput8-dll
+          path: dinput8.dll        with:
           name: dinput8-dll
           path: dinput8.dll
