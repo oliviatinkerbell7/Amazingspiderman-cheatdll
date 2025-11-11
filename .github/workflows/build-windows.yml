@@ -21,15 +21,10 @@ jobs:
           install: >
             mingw-w64-i686-toolchain
 
-      - name: Add mingw32 to PATH
-        shell: bash
-        run: |
-          echo "C:\msys64\mingw32\bin" >> $GITHUB_PATH
-
       - name: Build 32-bit DLL
-        shell: bash
+        shell: msys2 {0}
         run: |
-          i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
+          g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
           ls -la dinput8.dll || true
 
       - name: Upload artifact
