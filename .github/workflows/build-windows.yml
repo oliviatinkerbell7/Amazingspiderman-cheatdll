@@ -32,7 +32,4 @@ jobs:
         with:
           name: dinput8-dll
           path: dinput8.dll          name: dinput8-dll
-          path: dinput8.dll          name: dinput8-dll
-          path: dinput8.dll        with:
-          name: dinput8-dll
           path: dinput8.dll
