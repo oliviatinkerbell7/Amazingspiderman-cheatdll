@@ -31,5 +31,4 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dinput8-dll
-          path: dinput8.dll          name: dinput8-dll
           path: dinput8.dll
