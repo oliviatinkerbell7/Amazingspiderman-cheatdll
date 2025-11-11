@@ -15,16 +15,12 @@ jobs:
         uses: actions/checkout@v5
 
       - name: Setup Visual Studio Environment
-        shell: powershell
-        run: |
-          echo "Setting up 32-bit Visual Studio build environment..."
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86
+        shell: cmd
+        run: '"C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86'
 
       - name: Compile DLL
-        shell: powershell
-        run: |
-          echo "Compiling dinput8.dll..."
-          cl.exe /EHsc /LD /Fe:dinput8.dll src\main.cpp
+        shell: cmd
+        run: 'cl.exe /EHsc /LD /Fe:dinput8.dll src\main.cpp'
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
