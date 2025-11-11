@@ -1,33 +1,38 @@
-name: Build dinput8.dll (Windows)
+name: Build dinput8.dll (MSYS2 mingw32)
 
 on:
+  workflow_dispatch:
   push:
     branches:
       - main
-  workflow_dispatch:
 
 jobs:
   build:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Setup Visual Studio Build Tools
-        uses: microsoft/setup-msbuild@v1
+      - name: Setup MSYS2 with mingw32
+        uses: msys2/setup-msys2@v2
         with:
-          vs-version: 'latest'
+          update: true
+          install: >
+            mingw-w64-i686-gcc
+            make
+          msystem: MINGW32
 
-      - name: Compile DLL
-        shell: cmd
+      - name: Build DLL inside MSYS2 bash
+        shell: msys2 {0}
         run: |
-          echo Compiling dinput8.dll...
-          call "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86
-          cl /LD src\main.cpp /Fe:dinput8.dll /MD /EHsc /Zi
-          dir dinput8.dll
+          echo "Compiling dinput8.dll..."
+          pwd
+          ls -la
+          i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
+          ls -la dinput8.dll
 
-      - name: Upload compiled DLL
+      - name: Upload DLL artifact
         uses: actions/upload-artifact@v4
         with:
           name: dinput8-dll
