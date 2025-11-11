@@ -1,4 +1,4 @@
-name: Build dinput8.dll (MSYS2 mingw32)
+name: Build dinput8.dll (MSVC 32-bit)
 
 on:
   push:
@@ -14,22 +14,17 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v5
 
-      - name: Install MSYS2 and MinGW32
-        uses: msys2/setup-msys2@v2
-        with:
-          update: true
-          install: mingw-w64-i686-toolchain
+      - name: Setup Visual Studio Environment
+        shell: powershell
+        run: |
+          echo "Setting up 32-bit Visual Studio build environment..."
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86
 
-      - name: Add MSYS2 mingw32 to PATH
-        shell: bash
-        run: echo "C:/msys64/mingw32/bin" >> $GITHUB_PATH
-
-      - name: Build 32-bit DLL
-        shell: msys2 {0}
+      - name: Compile DLL
+        shell: powershell
         run: |
           echo "Compiling dinput8.dll..."
-          i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
-          ls -la dinput8.dll
+          cl.exe /EHsc /LD /Fe:dinput8.dll src\main.cpp
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
