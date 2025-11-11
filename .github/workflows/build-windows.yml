@@ -1,31 +1,48 @@
-name: Build dinput8.dll (mingw 32-bit on Ubuntu)
+name: Build dinput8.dll (Mingw 32-bit v5)
 
 on:
-  workflow_dispatch:
   push:
     branches:
       - main
+  workflow_dispatch:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      # Step 1: Checkout your repo
+      - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Install mingw-w64
-        run: |
-          sudo dpkg --add-architecture i386
-          sudo apt-get update
-          sudo apt-get install -y mingw-w64
+      # Step 2: Install MSYS2 + mingw32 toolchain
+      - name: Setup MSYS2 and mingw32
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >
+            mingw-w64-i686-toolchain
 
+      # Step 3: Add mingw32 to PATH
+      - name: Add mingw32 to PATH
+        shell: powershell
+        run: |
+          echo "C:\msys64\mingw32\bin" >> $env:GITHUB_PATH
+
+      # Step 4: Build the DLL
       - name: Build 32-bit DLL
+        shell: bash
         run: |
           i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
-          ls -la dinput8.dll
+          if [ -f dinput8.dll ]; then
+            echo "DLL built successfully!"
+          else
+            echo "DLL build failed!"
+            exit 1
+          fi
 
-      - name: Upload artifact
+      # Step 5: Upload artifact
+      - name: Upload DLL artifact
         uses: actions/upload-artifact@v4
         with:
           name: dinput8-dll
