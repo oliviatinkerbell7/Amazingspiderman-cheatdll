@@ -11,34 +11,26 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # Step 1: Checkout the repo
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # Step 2: Setup MSYS2 and install mingw32 toolchain
-      - name: Setup MSYS2 and mingw32
+      - name: Setup MSYS2
         uses: msys2/setup-msys2@v2
         with:
           update: true
           install: >
+            base-devel
             mingw-w64-i686-toolchain
 
-      # Step 3: Add mingw32 to PATH
-      - name: Add mingw32 to PATH
-        shell: bash
-        run: |
-          echo "C:\msys64\mingw32\bin" >> $GITHUB_PATH
-
-      # Step 4: Build DLL
       - name: Build DLL using MSYS2
-        shell: msys2 {0}
+        shell: msys2 {0}  # Run commands inside MSYS2 bash
         run: |
+          pacman -Sy --noconfirm mingw-w64-i686-gcc
           echo "Compiling dinput8.dll..."
           i686-w64-mingw32-g++ -Iinclude -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
           ls -la dinput8.dll || true
 
-      # Step 5: Upload DLL artifact
-      - name: Upload artifact
+      - name: Upload DLL artifact
         uses: actions/upload-artifact@v4
         with:
           name: dinput8-dll
