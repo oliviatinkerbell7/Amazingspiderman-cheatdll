@@ -1,12 +1,8 @@
 #pragma once
 
-// Offsets from GameLogic.dll (from your cheat table)
-#define OFF_HEALTH 0x4E2230
-#define OFF_XP     0x4F7B74
-#define OFF_TECH   0x4F7B78
+#define LOGFILE "cheat_log.txt"
 
-#ifdef _WIN32
-#define LOGFILE "C:\\Users\\Public\\dinput_cheat_log.txt"
-#else
-#define LOGFILE "/sdcard/Download/dinput_cheat_log.txt"
-#endif
+// Example offsets (replace with real ones if needed)
+#define OFF_HEALTH 0x0010F4A8
+#define OFF_XP     0x0010F4AC
+#define OFF_TECH   0x0010F4B0
