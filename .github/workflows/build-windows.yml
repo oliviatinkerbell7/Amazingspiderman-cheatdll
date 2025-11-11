@@ -1,6 +1,5 @@
 name: Build dinput8.dll (MSYS2 mingw32)
 
-# Trigger build on push to main or manual workflow dispatch
 on:
   push:
     branches:
@@ -12,32 +11,32 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      # 1. Checkout your repository
       - name: Checkout code
         uses: actions/checkout@v4
 
-      # 2. Setup MSYS2 and install mingw32 toolchain
+      # Setup MSYS2 and install mingw32 toolchain
       - name: Setup MSYS2 and mingw32
         uses: msys2/setup-msys2@v2
         with:
           update: true
-          install: mingw-w64-i686-toolchain
+          install: >
+            mingw-w64-i686-toolchain
 
-      # 3. Add MSYS2 mingw32 bin to PATH
-      - name: Add MSYS2 mingw32 to PATH
-        shell: powershell
+      # Add mingw32 to PATH inside MSYS2 bash
+      - name: Add mingw32 to PATH
+        shell: bash
         run: |
-          echo "C:\msys64\mingw32\bin" >> $env:GITHUB_PATH
+          echo "C:/msys64/mingw32/bin" >> $GITHUB_PATH
 
-      # 4. Build the DLL using MSYS2 bash
+      # Build DLL using MSYS2 bash shell
       - name: Build DLL using MSYS2
         shell: msys2 {0}
         run: |
           echo "Compiling dinput8.dll..."
-          i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -I./include -o dinput8.dll ./src/main.cpp
+          i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll ./src/main.cpp
           ls -la dinput8.dll || true
 
-      # 5. Upload the DLL as artifact
+      # Upload the compiled DLL as artifact
       - name: Upload DLL artifact
         uses: actions/upload-artifact@v4
         with:
