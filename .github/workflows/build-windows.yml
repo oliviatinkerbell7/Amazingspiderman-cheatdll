@@ -26,7 +26,7 @@ jobs:
         shell: cmd
         run: |
           echo Compiling dinput8.dll...
-          "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86
+          call "C:\Program Files (x86)\Microsoft Visual Studio\2022\BuildTools\VC\Auxiliary\Build\vcvarsall.bat" x86
           cl /LD src\main.cpp /Fe:dinput8.dll /MD /EHsc /Zi
           dir dinput8.dll
 
@@ -35,6 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: dinput8-dll
+          path: dinput8.dll          name: dinput8-dll
           path: dinput8.dll        with:
           name: dinput8-dll
           path: dinput8.dll
