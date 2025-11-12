@@ -1,4 +1,4 @@
-name: Build dinput8.dll (MSVC 32-bit)
+name: Build dinput8.dll (MSYS2 MinGW 32-bit)
 
 on:
   push:
@@ -11,25 +11,22 @@ jobs:
     runs-on: windows-latest
 
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v5
 
-      - name: Find VS 2022 installation path
-        id: vs
-        shell: powershell
+      - name: Setup MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+          install: >
+            mingw-w64-i686-toolchain
+
+      - name: Build DLL
+        shell: msys2 {0}
         run: |
-          $vsPath = & "C:\Program Files (x86)\Microsoft Visual Studio\Installer\vswhere.exe" -latest -products * -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
-          Write-Output "::set-output name=path::$vsPath"
-
-      - name: Setup MSVC environment
-        shell: cmd
-        run: '"%VSINSTALL%\VC\Auxiliary\Build\vcvarsall.bat" x86'
-        env:
-          VSINSTALL: ${{ steps.vs.outputs.path }}
-
-      - name: Compile DLL
-        shell: cmd
-        run: 'cl.exe /EHsc /LD /Fe:dinput8.dll src\main.cpp'
+          echo "Compiling dinput8.dll..."
+          i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll src/main.cpp
+          ls -la dinput8.dll || true
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
