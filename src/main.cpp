@@ -1,3 +1,4 @@
+#include "cheats.h"
 #include <windows.h>
 #include <fstream>
 #include "cheats.h"
