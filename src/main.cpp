@@ -1,4 +1,3 @@
-#include "cheats.h"
 #include <windows.h>
 #include <fstream>
 #include "cheats.h"
@@ -12,7 +11,7 @@ DWORD WINAPI CheatThread(LPVOID lpParam) {
 
     // Wait for GameLogic.dll to load
     HMODULE hMod = NULL;
-    while (!(hMod = GetModuleHandleA("GameLogic.dll"))) {
+    while (!(hMod = GetModuleHandle("GameLogic.dll"))) {
         Sleep(100);
     }
 
