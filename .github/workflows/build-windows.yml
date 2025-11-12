@@ -12,21 +12,34 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v5
+        uses: actions/checkout@v4
 
-      - name: Setup MSYS2
+      - name: Setup MSYS2 environment
         uses: msys2/setup-msys2@v2
         with:
           update: true
           install: >
-            mingw-w64-i686-toolchain
+            base-devel
+            mingw-w64-i686-gcc
+            mingw-w64-i686-binutils
+            mingw-w64-i686-headers
+            mingw-w64-i686-runtime
+          msystem: MINGW32
+
+      - name: Verify GCC installation
+        shell: msys2 {0}
+        run: |
+          echo "Checking GCC version..."
+          which i686-w64-mingw32-g++
+          i686-w64-mingw32-g++ --version
 
       - name: Build DLL
         shell: msys2 {0}
         run: |
           echo "Compiling dinput8.dll..."
           i686-w64-mingw32-g++ -O2 -shared -Wl,--kill-at -o dinput8.dll src/main.cpp
-          ls -la dinput8.dll || true
+          echo "Build complete. Listing files:"
+          ls -la
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
